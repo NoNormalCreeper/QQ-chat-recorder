@@ -8,8 +8,9 @@ test_msg = '''{
 }'''
 
 import asyncio
-from src.sender import send_message
+from src.sender import sender
 
-asyncio.run(send_message('test4', 2560359315))
-asyncio.run(send_message('test5', 2560359315, 798891715))
-asyncio.run(send_message('test6', group_id=798891715))
+asyncio.run(sender.send_message('test4', 2560359315))
+asyncio.run(sender.send_message('test5', 2560359315, 798891715))
+asyncio.run(sender.send_message('test6', group_id=798891715))
+asyncio.run(sender.send_message('test7', None, None))

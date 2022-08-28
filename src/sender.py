@@ -23,17 +23,20 @@ def get_request_body(message, user_id: int = -1, group_id: int = -1):
         request_body["params"]["user_id"] = user_id
     return json.dumps(request_body)
 
+class Sender:
+    async def send_message(self, message, user_id: int = -1, group_id: int = -1):
+        request_body = get_request_body(message, user_id, group_id)
+        async with websockets.connect(
+            f"ws://localhost:{ws_config['port-send']}"
+        ) as websocket:
+            await websocket.send(request_body)
+            while True:
+                response = await websocket.recv()
+                response = json.loads(response)
+                if response.get("echo") == "send_mannually_by_cmd":
+                    break
+            response = json.dumps(response, sort_keys=True, indent=4)
+            write_log(f"Response < \n{response}")
 
-async def send_message(message, user_id: int = -1, group_id: int = -1):
-    request_body = get_request_body(message, user_id, group_id)
-    async with websockets.connect(
-        f"ws://localhost:{ws_config['port-send']}"
-    ) as websocket:
-        await websocket.send(request_body)
-        while True:
-            response = await websocket.recv()
-            response = json.loads(response)
-            if response.get("echo") == "send_mannually_by_cmd":
-                break
-        response = json.dumps(response, sort_keys=True, indent=4)
-        write_log(f"Response < \n{response}")
+
+sender = Sender()
