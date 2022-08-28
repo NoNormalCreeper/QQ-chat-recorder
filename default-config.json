@@ -1,0 +1,8 @@
+{
+    "general": {},
+    "ws": {
+        "host": "localhost",
+        "port-send": 9601,
+        "port": 9602
+    }
+}
