@@ -1,6 +1,6 @@
 '''
-Attribute:
-:user_config
+## Attributes
+user_config: dict
 '''
 
 from pathlib import Path
@@ -12,4 +12,4 @@ except ModuleNotFoundError:
 config_path = Path(__file__).parent.parent / 'config.json'
 
 with open(config_path, 'r') as config:
-    user_config = json.loads(config.read())
+    user_config: dict = json.loads(config.read())
