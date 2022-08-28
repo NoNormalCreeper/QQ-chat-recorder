@@ -8,7 +8,7 @@ logger.add(
     sink=log_path,
     rotation="daily",
     colorize=True,
-    format="{time:YY-MM-DD HH:mm:ss} | {level} | {message}",
+    format="{time:YY-MM-DD HH:mm:ss} | {message}",
 )
 
 
