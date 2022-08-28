@@ -33,10 +33,7 @@ async def send_message(message, user_id: int = -1, group_id: int = -1):
         while True:
             response = await websocket.recv()
             response = json.loads(response)
-            try:
-                if response["echo"] == "send_mannually_by_cmd":
-                    break
-            except KeyError:
-                pass
+            if response.get("echo") == "send_mannually_by_cmd":
+                break
         response = json.dumps(response, sort_keys=True, indent=4)
         write_log(f"Response < \n{response}")
