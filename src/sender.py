@@ -33,12 +33,13 @@ def get_request_body(message, user_id: int = -1, group_id: int = -1):
 
 class Sender:
     async def send_message(self, message, user_id: int = -1, group_id: int = -1):
+        # Why to set default value to -1? To keep the type of user_id and group_id are int.
         request_body, echo_message = get_request_body(message, user_id, group_id)
         async with websockets.connect(
             f"ws://localhost:{ws_config['port-send']}"
         ) as websocket:
             await websocket.send(request_body)
-            while True:
+            while True:     # wait for response
                 response = await websocket.recv()
                 response = json.loads(response)
                 if response.get("echo") == echo_message:
