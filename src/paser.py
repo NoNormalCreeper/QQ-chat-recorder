@@ -5,7 +5,6 @@ import asyncio
 
 class Parser:
     async def _send(self, args: argparse.Namespace):
-        print(args)
         if (not args.user) and (not args.group):
             print("error: argument -u/-g expected one argument")
             return
@@ -20,9 +19,9 @@ class Parser:
         )
         subparsers = parser.add_subparsers(dest="operation")
         exec_parser = subparsers.add_parser("send", help="Send a message to a user or group.")
-        exec_parser.add_argument("-m", "--message", help="Message content.", default=None, required=True)
-        exec_parser.add_argument("-u", "--user", help="User id.", default=None, required=False)
-        exec_parser.add_argument("-g", "--group", help="Group id.", default=None, required=False)
+        exec_parser.add_argument("-m", "--message", help="Content of message", default=None, required=True)
+        exec_parser.add_argument("-u", "--user", help="User ID", default=None, required=False)
+        exec_parser.add_argument("-g", "--group", help="Group ID", default=None, required=False)
         args_namespace = parser.parse_args()
         if args_namespace.operation == "send":
             asyncio.run(self._send(args_namespace))
