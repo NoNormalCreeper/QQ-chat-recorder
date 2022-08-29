@@ -10,27 +10,27 @@ ws_config = user_config["ws"]
 
 class Recorder:
     async def _record(self, websocket):
-        async for message in websocket:
-            message = json.loads(message)
-            if message["post_type"] in ("message", "message_sent"):
-                message['raw_message'].replace('\n', '┙').replace('\r', '┙')
-                if message["post_type"] == "message_sent":
-                    message['user_id'] = "ME"
-                if message["message_type"] != "guild":
-                    if message["message_type"] == "private":
-                        if message["user_id"] == "ME":
+        async for event_data in websocket:
+            event_data = json.loads(event_data)
+            if event_data["post_type"] in ("message", "message_sent"):
+                event_data['raw_message'].replace('\n', '┙').replace('\r', '┙')
+                if event_data["post_type"] == "message_sent":
+                    event_data['user_id'] = "ME"
+                if event_data["message_type"] != "guild":
+                    if event_data["message_type"] == "private":
+                        if event_data["user_id"] == "ME":
                             write_log(
-                                f"{message['target_id']} < {message['raw_message']}")
+                                f"{event_data['target_id']} < {event_data['raw_message']}")
                         else:
                             write_log(
-                                f"{message['user_id']} > {message['raw_message']}")
-                    elif message["message_type"] == "group":
+                                f"{event_data['user_id']} > {event_data['raw_message']}")
+                    elif event_data["message_type"] == "group":
                         write_log(
-                            f"{message['user_id']} in {message['group_id']} > {message['raw_message']}"
+                            f"{event_data['user_id']} in {event_data['group_id']} > {event_data['raw_message']}"
                         )
                     else:
                         write_log(
-                            f"Unknown type of message > {json.dumps(message, sort_keys=True, indent=4)}"
+                            f"Unknown type of message > {json.dumps(event_data, sort_keys=True, indent=4)}"
                         )
 
     async def run(self):
