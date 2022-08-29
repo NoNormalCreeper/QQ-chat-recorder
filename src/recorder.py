@@ -19,15 +19,19 @@ class Recorder:
                 if message["message_type"] != "guild":
                     if message["message_type"] == "private":
                         if message["user_id"] == "ME":
-                            write_log(f"{message['target_id']} < {message['raw_message']}")
+                            write_log(
+                                f"{message['target_id']} < {message['raw_message']}")
                         else:
-                            write_log(f"{message['user_id']} > {message['raw_message']}")
+                            write_log(
+                                f"{message['user_id']} > {message['raw_message']}")
                     elif message["message_type"] == "group":
                         write_log(
                             f"{message['user_id']} in {message['group_id']} > {message['raw_message']}"
                         )
                     else:
-                        write_log(f"Unknown type of message > {json.dumps(message, sort_keys=True, indent=4)}")
+                        write_log(
+                            f"Unknown type of message > {json.dumps(message, sort_keys=True, indent=4)}"
+                        )
 
     async def run(self):
         async with serve(self._record, ws_config["host"], ws_config["port"]):
