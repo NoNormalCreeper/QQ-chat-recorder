@@ -88,7 +88,7 @@ servers:
 python main.py [-h] {send,stop,start} ...
 ```
 
-### 帮助信息
+### 参数
 
 ```bash
 positional arguments:
@@ -101,6 +101,20 @@ options:
   -h, --help         show this help message and exit
 ```
 
+### 发送信息
+
+```bash
+python main.py send [-h] -m MESSAGE [-u USER] [-g GROUP]
+optional arguments:
+  -m MESSAGE, --message MESSAGE
+                        Content of message
+  -u USER, --user USER  User ID
+  -g GROUP, --group GROUP
+                        Group ID
+```
+
+其中 `User ID` 与 `Group ID` 中应指定一个，若同时指定则以 `Group ID` 为准
+
 ## 运行示例
 
 #### 启动记录器
@@ -109,7 +123,7 @@ options:
 python main.py
 ```
 
-### 发送一条私聊消息
+#### 发送一条私聊消息
 
 给用户 `114514` 发送一条私聊消息以表示喜爱。
 
@@ -132,6 +146,8 @@ python main.py send -u 114514 --message "[CQ:face,id=318] suki"
     "status": "ok"
 }
 ```
+
+返回值中 `"status": "ok"` 说明发送成功。
 
 ## 贡献
 
