@@ -23,12 +23,12 @@ class Parser:
         )
 
         subparsers = parser.add_subparsers(dest="operation")
-        exec_parser = subparsers.add_parser("send", help="Send a message to a user or group.")
-        exec_parser.add_argument("-m", "--message", help="Content of message", default=None, required=True)
-        exec_parser.add_argument("-u", "--user", help="User ID", default=None, required=False)
-        exec_parser.add_argument("-g", "--group", help="Group ID", default=None, required=False)
-        exec_parser = subparsers.add_parser("stop", help="Stop the recorder.")
-        exec_parser = subparsers.add_parser("start", help="Start the recorder.")
+        send_parser = subparsers.add_parser("send", help="Send a message to a user or group.")
+        send_parser.add_argument("-m", "--message", help="Content of message", default=None, required=True)
+        send_parser.add_argument("-u", "--user", help="User ID", default=None, required=False)
+        send_parser.add_argument("-g", "--group", help="Group ID", default=None, required=False)
+        send_parser = subparsers.add_parser("stop", help="Stop the recorder.")
+        send_parser = subparsers.add_parser("start", help="Start the recorder.")
         args_namespace = parser.parse_args()
         if args_namespace.operation == "send":
             asyncio.run(self._send(args_namespace))
