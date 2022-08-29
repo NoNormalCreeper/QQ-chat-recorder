@@ -123,7 +123,7 @@ optional arguments:
 python main.py
 ```
 
-### 发送一条私聊消息
+#### 发送一条私聊消息
 
 给用户 `114514` 发送一条私聊消息以表示喜爱。
 
@@ -146,6 +146,8 @@ python main.py send -u 114514 --message "[CQ:face,id=318] suki"
     "status": "ok"
 }
 ```
+
+返回值中 `"status": "ok"` 说明发送成功。
 
 ## 贡献
 
