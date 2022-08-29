@@ -45,7 +45,7 @@ class Sender:
                 if response.get("echo") == echo_message:
                     break
             response = json.dumps(response, sort_keys=True, indent=4)
-            write_log(f"Response < \n{response}")
+            print(f"Response < \n{response}")
 
 
 sender = Sender()
