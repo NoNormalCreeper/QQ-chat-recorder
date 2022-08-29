@@ -88,7 +88,7 @@ servers:
 python main.py [-h] {send,stop,start} ...
 ```
 
-### 帮助信息
+### 参数
 
 ```bash
 positional arguments:
@@ -100,6 +100,20 @@ positional arguments:
 options:
   -h, --help         show this help message and exit
 ```
+
+### 发送信息
+
+```bash
+python main.py send [-h] -m MESSAGE [-u USER] [-g GROUP]
+optional arguments:
+  -m MESSAGE, --message MESSAGE
+                        Content of message
+  -u USER, --user USER  User ID
+  -g GROUP, --group GROUP
+                        Group ID
+```
+
+其中 `User ID` 与 `Group ID` 中应指定一个，若同时指定则以 `Group ID` 为准
 
 ## 运行示例
 
