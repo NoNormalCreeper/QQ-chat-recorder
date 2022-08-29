@@ -4,6 +4,10 @@ import asyncio
 
 
 class Parser:
+    async def _parse_call(self, params: list):
+        # do something...
+        pass
+
     async def _send(self, args: argparse.Namespace):
         if (not args.user) and (not args.group):
             print("error: argument -u/-g expected one argument")
@@ -27,8 +31,13 @@ class Parser:
         send_parser.add_argument("-m", "--message", help="Content of message", default=None, required=True)
         send_parser.add_argument("-u", "--user", help="User ID", default=None, required=False)
         send_parser.add_argument("-g", "--group", help="Group ID", default=None, required=False)
-        send_parser = subparsers.add_parser("stop", help="Stop the recorder.")
-        send_parser = subparsers.add_parser("start", help="Start the recorder.")
+        stop_parser = subparsers.add_parser("stop", help="Stop the recorder.")
+        start_parser = subparsers.add_parser("start", help="Start the recorder.")
+
+        call_parser = subparsers.add_parser("call", help="Call an API of go-cqhtttp.")
+        call_parser.add_argument("-a", "--action", help="API name", default=None, required=True)
+        call_parser.add_argument("-p", "--params", help="API parameters", nargs=argparse.REMAINDER, default=None, required=True)
+
         args_namespace = parser.parse_args()
         if args_namespace.operation == "send":
             asyncio.run(self._send(args_namespace))
@@ -36,6 +45,8 @@ class Parser:
             return 'start'
         if args_namespace.operation == "stop":
             self._stop()
+        if args_namespace.operation == "call":
+            self._parse_call(args_namespace.params)
 
 
 parser = Parser()

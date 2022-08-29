@@ -30,7 +30,7 @@ class Recorder:
                         )
                     else:
                         write_log(
-                            f"Unknown type of message > {json.dumps(event_data, sort_keys=True, indent=4)}"
+                            f"Unknown type of message >\n {json.dumps(event_data, sort_keys=True, indent=4)}"
                         )
 
     async def run(self):
