@@ -13,14 +13,15 @@ class Recorder:
         async for message in websocket:
             message = json.loads(message)
             if message["post_type"] == "message":
-                if message["message_type"] == "private":
-                    write_log(f"{message['user_id']} > {message['raw_message']}")
-                elif message["message_type"] == "group":
-                    write_log(
-                        f"{message['user_id']} in {message['group_id']} > {message['raw_message']}"
-                    )
-                else:
-                    write_log(f" > {message}")
+                if message["message_type"] != "guild":
+                    if message["message_type"] == "private":
+                        write_log(f"{message['user_id']} > {message['raw_message']}")
+                    elif message["message_type"] == "group":
+                        write_log(
+                            f"{message['user_id']} in {message['group_id']} > {message['raw_message']}"
+                        )
+                    else:
+                        write_log(f"Unknown type of message > {message}")
 
     async def run(self):
         async with serve(self._record, ws_config["host"], ws_config["port"]):
