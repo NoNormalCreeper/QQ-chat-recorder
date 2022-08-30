@@ -23,7 +23,7 @@ class Parser:
 
     async def _send(self, args: argparse.Namespace):
         if (not args.user) and (not args.group):
-            print("error: user/group id expected one argument")
+            print("error: user or group ID is required")
             return
         user_id = int(args.user) if args.user else -1
         group_id = int(args.group) if args.group else -1
@@ -44,6 +44,7 @@ class Parser:
         send_parser.add_argument("-m", "--message", help="content of message", default=None, required=True)
         send_parser.add_argument("-u", "--user", help="user ID", default=None, required=False)
         send_parser.add_argument("-g", "--group", help="group ID", default=None, required=False)
+        
         stop_parser = subparsers.add_parser("stop", help="Stop the recorder.")
         start_parser = subparsers.add_parser("start", help="Start the recorder.")
 
@@ -53,19 +54,26 @@ class Parser:
         
         get_image_parser = subparsers.add_parser("get-image", help="Get the image of chat history.")
         get_image_parser.add_argument("-n", "--name", help="file name", required=True)
+        
+        get_info_parser = subparsers.add_parser("get-info", help="Get the info of a user or group.")
+        get_info_parser.add_argument("-u", "--user", help="user ID", default=None, required=False)
+        get_info_parser.add_argument("-g", "--group", help="group ID", default=None, required=False)
 
         args_namespace = parser.parse_args()
         if args_namespace.operation == "send":
             asyncio.run(self._send(args_namespace))
-        if args_namespace.operation == "start":
+        elif args_namespace.operation == "start":
             return 'start'
-        if args_namespace.operation == "stop":
+        elif args_namespace.operation == "stop":
             self._stop()
-        if args_namespace.operation == "call":
+        elif args_namespace.operation == "call":
             params_dict = self._parse_call(args_namespace.params)
             asyncio.run(sender.call_api(args_namespace.action, params_dict))
-        if args_namespace.operation == "get-image":
+        elif args_namespace.operation == "get-image":
             asyncio.run(sender.get_image(args_namespace.name))
+        elif args_namespace.operation == "get-info":
+            asyncio.run(sender.get_info(args_namespace.user, args_namespace.group))
+            
 
 
 parser = Parser()
