@@ -22,7 +22,7 @@ def _get_params(message, user_id: int = -1, group_id: int = -1) -> dict:
     return params
 
 class Sender:
-    async def _call_api(self, action: str, params: dict, echo_message: str = "call_mannually_by_cmd", timeout: int = 30, print_response: bool = True) -> dict:
+    async def _call_api(self, action: str, params: dict, echo_message: str = "call_mannually", timeout: int = 30, print_response: bool = True) -> dict:
         start_time = time.time()
         echo_message += f"_{start_time}"
         request_body = {
@@ -46,6 +46,9 @@ class Sender:
                 print(f"\033[1;36mResponse <\033[0m \n{response_str}")
             return response
 
+    async def call_api(self, action: str, params: dict) -> None:
+        return await self._call_api(action, params, "call_mannually_by_cmd")
+    
     async def send_message(self, message, user_id: int = -1, group_id: int = -1) -> None:
         # Why to set default value to -1? To keep the type of user_id and group_id are int.
         await self._call_api('send_msg', _get_params(message, user_id, group_id), "send_mannuall_by_cmd")

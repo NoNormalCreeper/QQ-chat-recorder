@@ -4,13 +4,26 @@ import asyncio
 
 
 class Parser:
-    async def _parse_call(self, params: list):
-        # do something...
-        pass
+    def _parse_call(self, params: list) -> dict:
+        # example: params = ['arg1=awa', 'arg2=long text']
+        params_dict = {}
+        for param in params:
+            if "=" in param:
+                key, value = param.split("=")
+                key = key.replace("-", "_").replace(" ", "_").replace("msg", "message").lower()
+                try: 
+                    value = int(value)
+                except ValueError:
+                    pass
+                params_dict[key] = value
+            else:
+                print(f"error: invalid parameter in '{param}', should be in format of 'key=value'")
+                exit()
+        return params_dict
 
     async def _send(self, args: argparse.Namespace):
         if (not args.user) and (not args.group):
-            print("error: argument -u/-g expected one argument")
+            print("error: user/group id expected one argument")
             return
         user_id = int(args.user) if args.user else -1
         group_id = int(args.group) if args.group else -1
@@ -46,7 +59,8 @@ class Parser:
         if args_namespace.operation == "stop":
             self._stop()
         if args_namespace.operation == "call":
-            self._parse_call(args_namespace.params)
+            params_dict = self._parse_call(args_namespace.params)
+            asyncio.run(sender.call_api(args_namespace.action, params_dict))
 
 
 parser = Parser()
