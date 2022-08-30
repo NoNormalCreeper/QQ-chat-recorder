@@ -85,20 +85,29 @@ servers:
 ## 用法
 
 ```bash
-python main.py [-h] {send,stop,start} ...
+python main.py [-h] {send,stop,start,call,get-image} ...
 ```
 
 ### 参数
 
 ```bash
 positional arguments:
-  {send,stop,start}
-    send             Send a message to a user or group.
-    stop             Stop the recorder.
-    start            Start the recorder.
+  {send,stop,start,call,get-image}
+    send                Send a message to a user or group.
+    stop                Stop the recorder.
+    start               Start the recorder.
+    call                Call an API of go-cqhtttp.
+    get-image           Get the image of chat history.
 
-options:
-  -h, --help         show this help message and exit
+optional arguments:
+  -h, --help            show this help message and exit.
+```
+
+### 开始 / 停止
+
+```bash
+python main.py start  # 也可不加start
+python main.py stop
 ```
 
 ### 发送信息
@@ -113,7 +122,31 @@ optional arguments:
                         Group ID
 ```
 
-其中 `User ID` 与 `Group ID` 中应指定一个，若同时指定则以 `Group ID` 为准
+其中 `User ID` 与 `Group ID` 中应指定一个，若同时指定则以 `Group ID` 为准。
+
+### 调用 API
+
+```bash
+python main.py call [-h] -a ACTION -p ...
+optional arguments:
+  -h, --help            show this help message and exit
+  -a ACTION, --action ACTION
+                        API name
+  -p ..., --params ...  API parameters
+```
+
+其中 `params` 应指定为 `key=value` 的形式，若有多个参数则应用空格分隔。
+
+### 获取图片信息
+
+```bash
+python main.py get-image [-h] -n NAME
+optional arguments:
+  -h, --help            show this help message and exit
+  -n NAME, --name NAME  file name
+```
+
+其中 `file name` 为图片缓存的文件名，通常以 `.image` 后缀结尾。
 
 ## 运行示例
 
@@ -123,7 +156,7 @@ optional arguments:
 python main.py
 ```
 
-#### 发送一条私聊消息
+#### 发送消息
 
 给用户 `114514` 发送一条私聊消息以表示喜爱。
 
@@ -135,8 +168,8 @@ python main.py send -u 114514 --message "[CQ:face,id=318] suki"
 
 返回如下提示：
 
-```plaintext
-2022-08-28 22:18:25.945 | INFO     | src.log:write_log:16 - Response < 
+```json
+Response < 
 {
     "data": {
         "message_id": -207246359
@@ -148,6 +181,52 @@ python main.py send -u 114514 --message "[CQ:face,id=318] suki"
 ```
 
 返回值中 `"status": "ok"` 说明发送成功。
+
+#### 调用 API
+
+- API 参考：https://docs.go-cqhttp.org/api/
+
+在群组 `1919810` 中禁言用户 `114514` 5 分钟。
+
+```bash
+python main.py call -a set_group_ban -p group_id=1919810 user_id=114514 duration=300
+```
+
+返回如下提示：
+
+```json
+Response < 
+{
+    "data": null,
+    "echo": "call_mannually_by_cmd_1661834289.8971636",
+    "retcode": 0,
+    "status": "ok"
+}
+```
+
+#### 获取图片信息
+
+一天，我在看聊天记录的时候看到了这样一条消息：
+
+```plaintext
+114514 in 1919810 > [CQ:image,file=0d9312dedaa9bcb7fa9007c0d3a53aad.image,subType=0]草
+```
+
+我很好奇，想看看这张图到底是什么东西，所以我可以运行如下命令：
+
+```bash
+python main.py get-image -n 0d9312dedaa9bcb7fa9007c0d3a53aad.image
+```
+
+返回如下提示：
+
+```plaintext
+Image info < 
+{0D9312DE-DAA9-BCB7-FA90-07C0D3A53AAD}.jpg    1.91 kB
+https://gchat.qpic.cn/gchatpic_new/2560359315/798891715-2463410492-0D9312DEDAA9BCB7FA9007C0D3A53AAD/0?term=3
+```
+
+太好了！我点进去下面那个链接就可以看到图片了！
 
 ## 贡献
 
