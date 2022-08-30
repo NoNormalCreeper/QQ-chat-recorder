@@ -39,14 +39,20 @@ regexs = Regexs()
 
 
 class Searcher():
-    def search(self,
-                  qq_id: Union[int, str] = regexs.any_,
-                  group_id: Union[int, str] = regexs.any_,
-                  self_sent: bool = False,
-                  message_type: int = 1,    # 0: private, 1: group
-                  keyword: str = regexs.any_
+    async def search(self,
+                  qq_id: Optional[Union[int, str]] = regexs.any_,
+                  group_id: Optional[Union[int, str]] = regexs.any_,
+                  self_sent: Optional[bool] = False,
+                  message_type: Optional[int] = 1,    # 0: private, 1: group
+                  keyword: Optional[str] = regexs.any_
                   ) -> None:
+        qq_id = regexs.any_ if qq_id is None else qq_id
+        group_id = regexs.any_ if group_id is None else group_id
+        self_sent = False if self_sent is None else self_sent
+        message_type = 1 if message_type is None else message_type
+        keyword = regexs.any_ if keyword is None else keyword
         command[2] = regexs._get_regex(qq_id, group_id, self_sent, message_type, keyword)
+        print(command[2])
         subprocess.run(command)
 
 searcher = Searcher()

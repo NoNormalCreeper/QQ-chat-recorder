@@ -1,4 +1,5 @@
 from src.sender import sender
+from src.search import searcher
 import argparse
 import asyncio
 
@@ -59,6 +60,13 @@ class Parser:
         get_info_parser.add_argument("-u", "--user", help="user ID", default=None, required=False)
         get_info_parser.add_argument("-g", "--group", help="group ID", default=None, required=False)
         get_info_parser.add_argument("-m", "--message", help="message ID", default=None, required=False)
+        
+        search_parser = subparsers.add_parser("search", help="Search for a message with different conditions.")
+        search_parser.add_argument("-u", "--user", help="user ID", default=None, required=False)
+        search_parser.add_argument("-g", "--group", help="group ID", default=None, required=False)
+        search_parser.add_argument("-k", "--keyword", help="keyword", default=None, required=False)
+        search_parser.add_argument("-s", "--self-sent", help="if message was sent by self", nargs='?', const=True, default=False, required=False)
+        search_parser.add_argument("-p", "--private", help="if message is private", nargs='?', const=True, default=False, required=False)
 
         args_namespace = parser.parse_args()
         if args_namespace.operation == "send":
@@ -74,6 +82,8 @@ class Parser:
             asyncio.run(sender.get_image(args_namespace.name))
         elif args_namespace.operation == "get-info":
             asyncio.run(sender.get_info(args_namespace.user, args_namespace.group, args_namespace.message))
+        elif args_namespace.operation == "search":
+            asyncio.run(searcher.search(args_namespace.user, args_namespace.group, args_namespace.self_sent, int(not args_namespace.private), args_namespace.keyword))
             
 
 
