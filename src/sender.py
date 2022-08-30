@@ -9,43 +9,46 @@ import time
 ws_config = user_config["ws"]
 
 
-def get_request_body(message, user_id: int = -1, group_id: int = -1):
+def _get_params(message, user_id: int = -1, group_id: int = -1) -> dict:
     '''
-    Get request body for sending message.
-    Return:
-        request_body: str
-        echo_message: str
+    Get params for sending message.
     '''
-    echo_message = f"send_mannually_by_cmd_{time.time()}"
-    request_body = {
-        "action": "send_msg",
-        "params": {
-            "message": message,
-        },
-        "echo": echo_message
-    }
+    params = {"message": message}
     # group_id is more important than user_id
     if group_id != -1:
-        request_body["params"]["group_id"] = group_id
+        params["group_id"] = group_id
     elif user_id != -1:
-        request_body["params"]["user_id"] = user_id
-    return json.dumps(request_body), echo_message
+        params["user_id"] = user_id
+    return params
 
 class Sender:
-    async def send_message(self, message, user_id: int = -1, group_id: int = -1):
-        # Why to set default value to -1? To keep the type of user_id and group_id are int.
-        request_body, echo_message = get_request_body(message, user_id, group_id)
+    async def _call_api(self, action: str, params: dict, echo_message: str = "call_mannually_by_cmd", timeout: int = 30, print_response: bool = True) -> dict:
+        start_time = time.time()
+        echo_message += f"_{start_time}"
+        request_body = {
+            "action": action,
+            "params" : params,
+            "echo": echo_message
+        }
         async with websockets.connect(
             f"ws://localhost:{ws_config['port-send']}"
         ) as websocket:
-            await websocket.send(request_body)
+            await websocket.send(json.dumps(request_body))
             while True:     # wait for response
                 response = await websocket.recv()
                 response = json.loads(response)
                 if response.get("echo") == echo_message:
                     break
-            response = json.dumps(response, sort_keys=True, indent=4)
-            print(f"Response < \n{response}")
+                if time.time() - start_time > timeout:
+                    raise TimeoutError(f"Timeout when calling {action}")
+            response_str = json.dumps(response, sort_keys=True, indent=4)
+            if print_response:
+                print(f"\033[1;36mResponse <\033[0m \n{response_str}")
+            return response
+
+    async def send_message(self, message, user_id: int = -1, group_id: int = -1) -> None:
+        # Why to set default value to -1? To keep the type of user_id and group_id are int.
+        await self._call_api('send_msg', _get_params(message, user_id, group_id), "send_mannuall_by_cmd")
 
 
 sender = Sender()
