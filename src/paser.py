@@ -25,8 +25,8 @@ class Parser:
         if (not args.user) and (not args.group):
             print("error: user or group ID is required")
             return
-        user_id = int(args.user) if args.user else -1
-        group_id = int(args.group) if args.group else -1
+        user_id = int(args.user) if args.user else None
+        group_id = int(args.group) if args.group else None
         await sender.send_message(args.message, user_id, group_id)
     
     def _stop(self):

@@ -30,15 +30,15 @@ def format_file_size(size, decimals=2) -> str:
     return ('%.' + str(decimals) + 'f %s') % (size, largest_unit)
 
 class Sender:
-    def _get_params(self, message, user_id: int = -1, group_id: int = -1) -> dict:
+    def _get_params(self, message, user_id: Optional[int], group_id: Optional[int]) -> dict:
         '''
         Get params for sending message.
         '''
         params = {"message": message}
         # group_id is more important than user_id
-        if group_id != -1:
+        if group_id:
             params["group_id"] = group_id
-        elif user_id != -1:
+        elif user_id:
             params["user_id"] = user_id
         return params
     
@@ -68,8 +68,7 @@ class Sender:
     async def call_api(self, action: str, params: dict) -> None:
         return await self._call_api(action, params, "call_mannually_by_cmd")
     
-    async def send_message(self, message, user_id: int = -1, group_id: int = -1) -> None:
-        # Why to set default value to -1? To keep the type of user_id and group_id are int.
+    async def send_message(self, message, user_id: Optional[int], group_id: Optional[int]) -> None:
         await self._call_api('send_msg', self._get_params(message, user_id, group_id), "send_mannuall_by_cmd")
     
     async def get_image(self, file_name) -> None:
