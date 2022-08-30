@@ -45,7 +45,7 @@ class Searcher():
                   self_sent: bool = False,
                   message_type: int = 1,    # 0: private, 1: group
                   keyword: str = regexs.any_
-                  ) -> str:
+                  ) -> None:
         command[2] = regexs._get_regex(qq_id, group_id, self_sent, message_type, keyword)
         subprocess.run(command)
 
