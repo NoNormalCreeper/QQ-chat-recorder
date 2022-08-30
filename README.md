@@ -4,6 +4,8 @@
 
 腾讯QQ客户端经常会吞掉我们的聊天记录，有可能几天前的群聊聊天记录都找不到了，而我也因此丢掉了一些重要的私聊信息，我十分不满，于是该项目应运而生。
 
+**由于 `grep` 命令仅在 Linux 上可用，故搜索聊天记录功能仅支持 Linux 。**
+
 ## 安装
 
 #### 下载项目源文件
@@ -148,6 +150,18 @@ optional arguments:
 
 其中 `file name` 为图片缓存的文件名，通常以 `.image` 后缀结尾。
 
+### 获取 用户/群组/消息 信息
+```bash
+python main.py get-info [-h] [-u USER] [-g GROUP] [-m MESSAGE]
+optional arguments:
+  -h, --help            show this help message and exit
+  -u USER, --user USER  user ID
+  -g GROUP, --group GROUP
+                        group ID
+  -m MESSAGE, --message MESSAGE
+                        message ID
+```
+
 ## 运行示例
 
 #### 启动记录器
@@ -227,6 +241,40 @@ https://gchat.qpic.cn/gchatpic_new/2560359315/798891715-2463410492-0D9312DEDAA9B
 ```
 
 太好了！我点进去下面那个链接就可以看到图片了！
+
+#### 获取群成员信息
+
+获取群组 `1919810` 中群成员 `114514` 的信息。
+
+```bash
+python main.py get-info -g 1919810 -u 114514
+```
+
+返回如下提示：
+
+```json
+Info < 
+{
+    "age": 24,
+    "area": "",
+    "card": "",
+    "card_changeable": false,
+    "group_id": 1917810,
+    "join_time": 1658881615,
+    "last_sent_time": 1661692053,
+    "level": "19",
+    "nickname": "qwq",
+    "role": "member",
+    "sex": "male",
+    "shut_up_timestamp": 0,
+    "title": "",
+    "title_expire_time": 0,
+    "unfriendly": false,
+    "user_id": 114514
+}
+```
+
+可以看出来，他叫`qwq`，今年`24`岁，`男`，群名片`未设置`，`19`级，`普通成员`，最后一次发消息时间是`今天`(时间戳为`1661692053`)。
 
 ## 贡献
 
