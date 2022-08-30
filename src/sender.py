@@ -17,6 +17,16 @@ def beautify_json(json_data) -> str:
     json_data = highlight(json_data, lexers.JsonLexer(), formatters.TerminalFormatter())
     return json_data
 
+def format_file_size(size, decimals=2) -> str:
+    # https://lindevs.com/code-snippets/convert-file-size-in-bytes-into-human-readable-string-using-python
+    units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB']
+    largest_unit = 'YB'
+    step = 1000
+    for unit in units:
+        if size < step:
+            return ('%.' + str(decimals) + 'f %s') % (size, unit)
+        size /= step
+    return ('%.' + str(decimals) + 'f %s') % (size, largest_unit)
 
 class Sender:
     def _get_params(self, message, user_id: int = -1, group_id: int = -1) -> dict:
@@ -60,6 +70,17 @@ class Sender:
     async def send_message(self, message, user_id: int = -1, group_id: int = -1) -> None:
         # Why to set default value to -1? To keep the type of user_id and group_id are int.
         await self._call_api('send_msg', self._get_params(message, user_id, group_id), "send_mannuall_by_cmd")
+    
+    async def get_image(self, file_name) -> None:
+        if not file_name.endswith(".image"):
+            file_name += ".image"
+        response = await self._call_api('get_image', {"file": file_name}, "get_image_by_cmd", print_response=False)
+        response_data = response["data"]
+        size = response_data["size"]
+        print(f"\033[1;37mImage info <\033[0m \n\
+            {response_data['filename']}    {format_file_size(response_data['size'])}\n\
+            {response_data['url']}"
+            )
 
 
 sender = Sender()

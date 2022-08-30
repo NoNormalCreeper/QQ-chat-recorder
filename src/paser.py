@@ -41,15 +41,18 @@ class Parser:
 
         subparsers = parser.add_subparsers(dest="operation")
         send_parser = subparsers.add_parser("send", help="Send a message to a user or group.")
-        send_parser.add_argument("-m", "--message", help="Content of message", default=None, required=True)
-        send_parser.add_argument("-u", "--user", help="User ID", default=None, required=False)
-        send_parser.add_argument("-g", "--group", help="Group ID", default=None, required=False)
+        send_parser.add_argument("-m", "--message", help="content of message", default=None, required=True)
+        send_parser.add_argument("-u", "--user", help="user ID", default=None, required=False)
+        send_parser.add_argument("-g", "--group", help="group ID", default=None, required=False)
         stop_parser = subparsers.add_parser("stop", help="Stop the recorder.")
         start_parser = subparsers.add_parser("start", help="Start the recorder.")
 
         call_parser = subparsers.add_parser("call", help="Call an API of go-cqhtttp.")
         call_parser.add_argument("-a", "--action", help="API name", default=None, required=True)
         call_parser.add_argument("-p", "--params", help="API parameters", nargs=argparse.REMAINDER, default=None, required=True)
+        
+        get_image_parser = subparsers.add_parser("get-image", help="Get the image of chat history.")
+        get_image_parser.add_argument("-n", "--name", help="file name", required=True)
 
         args_namespace = parser.parse_args()
         if args_namespace.operation == "send":
@@ -61,6 +64,8 @@ class Parser:
         if args_namespace.operation == "call":
             params_dict = self._parse_call(args_namespace.params)
             asyncio.run(sender.call_api(args_namespace.action, params_dict))
+        if args_namespace.operation == "get-image":
+            asyncio.run(sender.get_image(args_namespace.name))
 
 
 parser = Parser()
