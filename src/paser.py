@@ -58,6 +58,7 @@ class Parser:
         get_info_parser = subparsers.add_parser("get-info", help="Get the info of a user or group.")
         get_info_parser.add_argument("-u", "--user", help="user ID", default=None, required=False)
         get_info_parser.add_argument("-g", "--group", help="group ID", default=None, required=False)
+        get_info_parser.add_argument("-m", "--message", help="message ID", default=None, required=False)
 
         args_namespace = parser.parse_args()
         if args_namespace.operation == "send":
@@ -72,7 +73,7 @@ class Parser:
         elif args_namespace.operation == "get-image":
             asyncio.run(sender.get_image(args_namespace.name))
         elif args_namespace.operation == "get-info":
-            asyncio.run(sender.get_info(args_namespace.user, args_namespace.group))
+            asyncio.run(sender.get_info(args_namespace.user, args_namespace.group, args_namespace.message))
             
 
 

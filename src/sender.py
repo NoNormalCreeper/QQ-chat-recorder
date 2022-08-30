@@ -82,15 +82,15 @@ class Sender:
             {response_data['url']}"
             )
     
-    async def get_info(self, user_id: Optional[int], group_id: Optional[int]) -> None:
+    async def get_info(self, user_id: Optional[int], group_id: Optional[int], message_id: Optional[int]) -> None:
         if user_id and group_id:
             func = self._call_api('get_group_member_info', {"group_id": group_id, "user_id": user_id}, "get_info_by_cmd", print_response=False)
         elif user_id and not group_id:
             func = self._call_api('get_stranger_info', {"user_id": user_id}, "get_info_by_cmd", print_response=False)
         elif not user_id and group_id:
             func = self._call_api('get_group_info', {"group_id": group_id}, "get_info_by_cmd", print_response=False)
-        elif (not user_id) and (not group_id):
-            print("error: user or group ID is required")
+        elif message_id:
+            func = self._call_api('get_msg', {"message_id": message_id}, "get_info_by_cmd", print_response=False)
         response = await func
         print(f"\033[1;37mInfo <\033[0m \n{beautify_json(response['data'])}")
 
