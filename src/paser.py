@@ -4,9 +4,26 @@ import asyncio
 
 
 class Parser:
+    def _parse_call(self, params: list) -> dict:
+        # example: params = ['arg1=awa', 'arg2=long text']
+        params_dict = {}
+        for param in params:
+            if "=" in param:
+                key, value = param.split("=")
+                key = key.replace("-", "_").replace(" ", "_").replace("msg", "message").lower()
+                try: 
+                    value = int(value)
+                except ValueError:
+                    pass
+                params_dict[key] = value
+            else:
+                print(f"error: invalid parameter in '{param}', should be in format of 'key=value'")
+                exit()
+        return params_dict
+
     async def _send(self, args: argparse.Namespace):
         if (not args.user) and (not args.group):
-            print("error: argument -u/-g expected one argument")
+            print("error: user/group id expected one argument")
             return
         user_id = int(args.user) if args.user else -1
         group_id = int(args.group) if args.group else -1
@@ -24,11 +41,19 @@ class Parser:
 
         subparsers = parser.add_subparsers(dest="operation")
         send_parser = subparsers.add_parser("send", help="Send a message to a user or group.")
-        send_parser.add_argument("-m", "--message", help="Content of message", default=None, required=True)
-        send_parser.add_argument("-u", "--user", help="User ID", default=None, required=False)
-        send_parser.add_argument("-g", "--group", help="Group ID", default=None, required=False)
-        send_parser = subparsers.add_parser("stop", help="Stop the recorder.")
-        send_parser = subparsers.add_parser("start", help="Start the recorder.")
+        send_parser.add_argument("-m", "--message", help="content of message", default=None, required=True)
+        send_parser.add_argument("-u", "--user", help="user ID", default=None, required=False)
+        send_parser.add_argument("-g", "--group", help="group ID", default=None, required=False)
+        stop_parser = subparsers.add_parser("stop", help="Stop the recorder.")
+        start_parser = subparsers.add_parser("start", help="Start the recorder.")
+
+        call_parser = subparsers.add_parser("call", help="Call an API of go-cqhtttp.")
+        call_parser.add_argument("-a", "--action", help="API name", default=None, required=True)
+        call_parser.add_argument("-p", "--params", help="API parameters", nargs=argparse.REMAINDER, default=None, required=True)
+        
+        get_image_parser = subparsers.add_parser("get-image", help="Get the image of chat history.")
+        get_image_parser.add_argument("-n", "--name", help="file name", required=True)
+
         args_namespace = parser.parse_args()
         if args_namespace.operation == "send":
             asyncio.run(self._send(args_namespace))
@@ -36,6 +61,11 @@ class Parser:
             return 'start'
         if args_namespace.operation == "stop":
             self._stop()
+        if args_namespace.operation == "call":
+            params_dict = self._parse_call(args_namespace.params)
+            asyncio.run(sender.call_api(args_namespace.action, params_dict))
+        if args_namespace.operation == "get-image":
+            asyncio.run(sender.get_image(args_namespace.name))
 
 
 parser = Parser()
