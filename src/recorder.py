@@ -13,7 +13,8 @@ class Recorder:
         async for event_data in websocket:
             event_data = json.loads(event_data)
             if event_data["post_type"] in ("message", "message_sent"):
-                event_data['raw_message'].replace('\n', '┙').replace('\r', '┙')
+                # print(event_data['raw_message'])
+                event_data['raw_message'] = event_data['raw_message'].replace('\n', ' ┙ ').replace('\r', ' ┙ ')
                 if event_data["post_type"] == "message_sent":
                     event_data['user_id'] = "ME"
                 if event_data["message_type"] != "guild":
