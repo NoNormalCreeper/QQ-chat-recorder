@@ -4,3 +4,5 @@ go-cqhttp/**
 **.pyc
 .vscode/**
 logs/**
+1.txt
+temp.py
