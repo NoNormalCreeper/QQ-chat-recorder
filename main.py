@@ -1,5 +1,6 @@
 import asyncio
 import sys
+sys.path.append("src")
 from src.utils import user_config
 from src.log import write_log
 from src.recorder import recorder
