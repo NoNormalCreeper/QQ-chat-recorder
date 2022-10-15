@@ -4,7 +4,7 @@ sys.path.append("src")
 from src.utils import user_config
 from src.log import write_log
 from src.recorder import recorder
-from src.paser import parser
+from src.parser import parser
 
 def main():
     write_log("Recorder started.")
