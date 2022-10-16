@@ -19,7 +19,7 @@ class Regexs():
     sent_separator = "(<)"
     any_ = "(.*?)"
     keyword = "({})"
-    model = "{0} {1} {2} {3} {4}{5}"
+    base = "{0} {1} {2}{3} {4}{5}"
 
     def _get_regex(self, qq_id, group_id, self_sent, message_type, keyword) -> str:
         if message_type == 0:
@@ -30,8 +30,11 @@ class Regexs():
             if self_sent:
                 qq_id = 'ME'
 
-        separator = self.sent_separator if (message_type == 0) else self.separator
-        regex = self.model.format(self.suffix, self.qq_id.format(qq_id), self.group_id.format(group_id), separator, self.any_, self.keyword.format(keyword))
+        separator = self.sent_separator if (message_type == 0 and self_sent) else self.separator
+        regex = self.base.format(self.suffix, self.qq_id.format(qq_id),
+                                  ((self.group_id.format(group_id)) if (message_type != 0) else ''),
+                                  separator, self.any_,
+                                  self.keyword.format(keyword))
         # print(f"regex: {regex}")
         return regex
 
