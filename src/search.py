@@ -30,8 +30,9 @@ class Regexs():
             if self_sent:
                 qq_id = 'ME'
 
-        separator = self.sent_separator if self_sent else self.separator
+        separator = self.sent_separator if (message_type == 0) else self.separator
         regex = self.model.format(self.suffix, self.qq_id.format(qq_id), self.group_id.format(group_id), separator, self.any_, self.keyword.format(keyword))
+        # print(f"regex: {regex}")
         return regex
 
 
@@ -52,7 +53,6 @@ class Searcher():
         message_type = 1 if message_type is None else message_type
         keyword = regexs.any_ if keyword is None else keyword
         command[2] = regexs._get_regex(qq_id, group_id, self_sent, message_type, keyword)
-        print(command[2])
         subprocess.run(command)
 
 searcher = Searcher()
